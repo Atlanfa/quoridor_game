@@ -86,6 +86,7 @@ class GameField:
     def move_player(self, player):
         self.field[player.current_position.x][player.current_position.y] = 0
         self.field[player.next_position.x][player.next_position.y] = player.player_number
+        player.current_position = player.next_position
 
 
 # game_field = GameField()

@@ -11,5 +11,5 @@ class Coordinate:
             return False
 
 
-# c1 = Coordinate("s", 1)
-# print(c1.is_correct)
+c1 = Coordinate("1", 1)
+print(c1.is_correct)

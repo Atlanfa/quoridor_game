@@ -173,7 +173,7 @@ class Graph:
 
     def get_all_endpoint(self, node):
         endpoints = []
-        for road in self.get_all_roads(self, node):
+        for road in self.get_all_roads(node):
             endpoints.append(road[1][-1])
         return endpoints
 

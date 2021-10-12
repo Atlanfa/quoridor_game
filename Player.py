@@ -3,15 +3,24 @@ from Coordinate import Coordinate
 
 class Player:
     def __init__(self, player_type, player_number):
-        self.player_type = player_type
-        self.player_number = player_number
+        self.player_type = player_type  # True - Player, False - computer
+        self.player_number = player_number  # int
         self.walls_amount = 10
-        self.current_position = self.set_start_position()
+        self.current_position = self._set_start_position()
         self.next_position = None
         self.can_move_here = None
         self.places_to_move = None
 
-    def set_start_position(self):
+    def isWin(self):
+        if self.player_number == 1:
+            if self.current_position.x == 0:
+                return True
+        if self.player_number == 2:
+            if self.current_position.x == 16:
+                return True
+        return False
+
+    def _set_start_position(self):
         return Coordinate(16, 8) if self.player_number == 1 else Coordinate(0, 8)
 
     def decrease_wall_amount(self):
@@ -111,8 +120,6 @@ class Player:
     def check_left(self, field):
         return True if field[self.current_position.x][self.current_position.y - 1] == 3 else False
 
-
 # player = Player(True, 1)
-# print(player.walls_amount)
 # print(f"x-{player.current_position.x} y-{player.current_position.y}")
 # print(player.next_position)
