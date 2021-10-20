@@ -1,22 +1,33 @@
-def enter(player, type):
-    if type == "wall":
+from bot import *
+
+
+def enter(player, types):
+    if types == "wall":
         if player.player_type:
             return input()
         elif not player.player_type:
-            # TODO bot wall def
+            return placeWall()
             pass
-    elif type == "move":
+    elif types == "move":
         if player.player_type:
             return input()
         elif not player.player_type:
-            # TODO bot move def
+            return move(player)
             pass
-    elif type == "choose":
+    elif types == "choose":
         if player.player_type:
             return input()
         elif not player.player_type:
-            # TODO bot choose def
+            return choose()
             pass
-    elif type == "playAgain":
+    elif types == "playAgain":
         if player.player_type:
             return input()
+
+
+def who():
+    return input()
+
+
+def play():
+    return input()

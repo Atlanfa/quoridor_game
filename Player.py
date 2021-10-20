@@ -10,6 +10,10 @@ class Player:
         self.next_position = None
         self.can_move_here = None
         self.places_to_move = None
+        if self.player_number == 2:
+            self._forWin = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
+        else:
+            self._forWin = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12], [0, 14], [0, 16]]
 
     def isWin(self):
         if self.player_number == 1:
@@ -27,66 +31,49 @@ class Player:
         if self.walls_amount != 0:
             self.walls_amount -= 1
 
-    def set_places_to_move(self, game_field):
-        places_to_move_list = []
-        if self.current_position.x == 0 and 0 < self.current_position.y < 16:
-            if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-            if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
-            if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
-        elif self.current_position.x == 16 and 0 < self.current_position.y < 16:
-            if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-            if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
+    def set_places_to_move(self, game_field, list_of_players=None, list_of_possible_moves=None, anotherPlayer=None,
+                           flag=False):
+        if flag == False:
+            if self.player_number == list_of_players[0].player_number:
+                anotherPlayer = list_of_players[1]
+            else:
+                anotherPlayer = list_of_players[0]
+        if flag == False:
+            list_of_possible_moves = []
+        if self.current_position.x - 2 >= 0:  # UP
             if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-        elif self.current_position.x == 0 and self.current_position.y == 0:
-            if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
+                if not self.player_check_up(game_field.field, anotherPlayer.current_position):
+                    list_of_possible_moves.append(self.up())
+                elif flag is False:
+                    list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
+                                                                              list_of_possible_moves=list_of_possible_moves,
+                                                                              anotherPlayer=self, flag=True)
+        if self.current_position.y + 2 <= 16:  # RIGHT
             if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-        elif self.current_position.x == 0 and self.current_position.y == 16:
+                if not self.player_check_right(game_field.field, anotherPlayer.current_position):
+                    list_of_possible_moves.append(self.right())
+                elif flag is False:
+                    list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
+                                                                              list_of_possible_moves=list_of_possible_moves,
+                                                                              anotherPlayer=self, flag=True)
+        if self.current_position.x + 2 <= 16:  # DOWN
             if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
+                if not self.player_check_down(game_field.field, anotherPlayer.current_position):
+                    list_of_possible_moves.append(self.down())
+                elif flag is False:
+                    list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
+                                                                              list_of_possible_moves=list_of_possible_moves,
+                                                                              anotherPlayer=self, flag=True)
+        if self.current_position.y - 2 >= 0:  # LEFT
             if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
-        elif self.current_position.x == 16 and self.current_position.y == 0:
-            if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-            if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-        elif self.current_position.x == 16 and self.current_position.y == 16:
-            if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-            if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
-        elif 0 < self.current_position.x < 16 and self.current_position.y == 16:
-            if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
-            if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-            if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
-        elif 16 > self.current_position.x > 0 == self.current_position.y:
-            if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
-            if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-            if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-        elif 0 < self.current_position.x < 16 and 0 < self.current_position.y < 16:
-            if self.check_down(game_field.field):
-                places_to_move_list.append(self.down())
-            if self.check_up(game_field.field):
-                places_to_move_list.append(self.up())
-            if self.check_right(game_field.field):
-                places_to_move_list.append(self.right())
-            if self.check_left(game_field.field):
-                places_to_move_list.append(self.left())
-        self.places_to_move = places_to_move_list
+                if not self.player_check_left(game_field.field, anotherPlayer.current_position):
+                    list_of_possible_moves.append(self.left())
+                elif flag is False:
+                    list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
+                                                                              list_of_possible_moves=list_of_possible_moves,
+                                                                              anotherPlayer=self, flag=True)
+        self.places_to_move = list_of_possible_moves
+        return list_of_possible_moves
 
     def set_next_position(self, coordinate):
         if coordinate.is_correct and coordinate in self.places_to_move:
@@ -120,6 +107,35 @@ class Player:
     def check_left(self, field):
         return True if field[self.current_position.x][self.current_position.y - 1] == 3 else False
 
+    def player_check_up(self, field, secPlayer):
+        if self.current_position.x - 2 == secPlayer.x and self.current_position.y == secPlayer.y:
+            return True
+        return False
+
+    def player_check_down(self, field, secPlayer):
+        if self.current_position.x + 2 == secPlayer.x and self.current_position.y == secPlayer.y:
+            return True
+        return False
+
+    def player_check_right(self, field, secPlayer):
+        if self.current_position.x == secPlayer.x and self.current_position.y + 2 == secPlayer.y:
+            return True
+        return False
+
+    def player_check_left(self, field, secPlayer):
+        if self.current_position.x == secPlayer.x and self.current_position.y - 2 == secPlayer.y:
+            return True
+        return False
+
+    @property
+    def forWin(self):
+        return self._forWin
+
 # player = Player(True, 1)
+#
+# for i in player.forWin:
+#     print(i[0])
+#     print(i[1])
+#
 # print(f"x-{player.current_position.x} y-{player.current_position.y}")
 # print(player.next_position)

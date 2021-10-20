@@ -1,9 +1,10 @@
-from Graph import update_connections_from_field, create_graph
-from Node import create_nodes_from_field
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
 
 
 def calculate_point(point):
-    return int(point/2)
+    return int(point / 2)
 
 
 def backwards_calculating_point(point):
@@ -18,7 +19,7 @@ def get_connected_points(field):
                 if field[i][j + 1] == 3:
                     connected_points.append(
                         ((calculate_point(i), calculate_point(j)), (calculate_point(i), calculate_point(j + 2))))
-                if field[i+1][j] == 3:
+                if field[i + 1][j] == 3:
                     connected_points.append(
                         ((calculate_point(i), calculate_point(j)), (calculate_point(i + 2), calculate_point(j))))
             else:
@@ -30,7 +31,7 @@ def get_connected_points(field):
                     if field[i + 1][j] == 3:
                         connected_points.append(
                             ((calculate_point(i), calculate_point(j)), (calculate_point(i + 2), calculate_point(j))))
-    #print(connected_points)
+    # print(connected_points)
     return connected_points
 
 
@@ -57,6 +58,10 @@ def fill_the_field():
                 else:
                     row_items.append(0)
             field.append(row_items)
+    for i in range(16):
+        for j in range(16):
+            if i % 2 == 1 and j % 2 == 1:
+                field[i][j] = 5
     return field
 
 
@@ -70,25 +75,99 @@ def field_preparation(field):
 class GameField:
     def __init__(self):
         self.field = self.get_start_field()
-        self.nodes = create_nodes_from_field(self.field)
-        self.graph = update_connections_from_field(get_connected_points(self.field), create_graph(self.nodes), self.nodes)
+        self.graph = self.set_graph()
 
     @staticmethod
     def get_start_field():
         return field_preparation(fill_the_field())
 
+    def set_graph(self):
+        q = self.graphPrepare(self.field)
+        grid = Grid(matrix=q)
+        return grid
+
+    def pathfinder(self, players):  # players - список игроков, field - экземпляр класса GameField
+        grid = self.graph
+        fpWay = False  # Есть ли путь для первого игрока
+        spWay = False  # Есть ли путь для второго игрока
+
+        for win in players[0].forWin:
+            grid.cleanup()
+            start = grid.node(players[0].current_position.x, players[0].current_position.y)
+            end = grid.node(win[0], win[1])
+
+            finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+            path, runs = finder.find_path(start, end, grid)
+            # print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
+            # print(grid.grid_str(path=path, start=start, end=end))
+            if len(path) >= 2:
+                fpWay = True
+                break
+        for win in players[0].forWin:
+            grid.cleanup()
+            start = grid.node(players[0].current_position.x, players[0].current_position.y)
+            end = grid.node(win[0], win[1])
+
+            finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+            path, runs = finder.find_path(start, end, grid)
+            # print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
+            # print(grid.grid_str(path=path, start=start, end=end))
+            if len(path) >= 2:
+                spWay = True
+                break
+        # for win2 in players[1].forWin:
+        #     grid2.cleanup()
+        #     start2 = grid2.node(players[1].current_position.x, players[1].current_position.y)
+        #     end2 = grid2.node(win2[0], win2[1])
+        #
+        #     finder2 = AStarFinder(diagonal_movement=DiagonalMovement.never)
+        #     path2, runs2 = finder2.find_path(start2, end2, grid2)
+        #     # print('operations:', runs2, 'path length:', len(path2)) #Тестовый вывод
+        #     # print(grid2.grid_str(path=path2, start=start2, end=end2))
+        #     if len(path2) >= 2:
+        #         spWay = True
+        #         break
+        if fpWay and spWay:
+            return True
+        else:
+            return False
+
+    def graphPrepare(self, field):
+        tempField = []
+        for i in range(len(field[0])):
+            tempField.append([])
+            for j in range(len(field[1])):
+                if field[i][j] == 0:
+                    tempField[i].append(1)  # Пустая клетка
+                elif field[i][j] == 3:
+                    tempField[i].append(3)  # Пустая стенка
+                elif field[i][j] == 4:
+                    tempField[i].append(0)  # Стенка
+                elif field[i][j] == 5:
+                    tempField[i].append(0)  # Стенка
+                elif field[i][j] == 1:
+                    tempField[i].append(1)  # Игрок
+                elif field[i][j] == 2:
+                    tempField[i].append(1)  # Игрок
+
+        return tempField
+
     def set_wall(self, wall):
         self.field[wall.coordinates_start.x][wall.coordinates_start.y] = 4
         self.field[wall.coordinates_end.x][wall.coordinates_end.y] = 4
         self.field[wall.coordinates_middle.x][wall.coordinates_middle.y] = 4
-        self.graph = update_connections_from_field(get_connected_points(self.field), create_graph(self.nodes), self.nodes)
 
     def move_player(self, player):
         self.field[player.current_position.x][player.current_position.y] = 0
         self.field[player.next_position.x][player.next_position.y] = player.player_number
         player.current_position = player.next_position
 
-
 # game_field = GameField()
+# messages.print_field(game_field.field)
 # for row in game_field.field:
 #     print(row)
+# player = Player(True, 1)
+# field = GameField()
+# for i in field.field:
+#     print(i)
+# print(field.pathfinder([player, player]))
