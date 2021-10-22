@@ -1,5 +1,5 @@
 def choose_action_message(player):
-    print(f"{player.player_number} player turn, choose action.\n1 - Move hero.\n2 - Place the wall.")
+    print(f"{player.player_number} player turn, choose action.\n1 - Move hero.\n2 - Place the walll.")
     pass
 
 
