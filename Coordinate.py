@@ -12,4 +12,4 @@ class Coordinate:
 
 
 c1 = Coordinate("1", 1)
-print(c1.is_correct)
+# print(c1.is_correct)

@@ -134,8 +134,8 @@ class Player:
 # player = Player(True, 1)
 #
 # for i in player.forWin:
-#     print(i[0])
-#     print(i[1])
+#     # print(i[0])
+#     # print(i[1])
 #
-# print(f"x-{player.current_position.x} y-{player.current_position.y}")
-# print(player.next_position)
+# # print(f"x-{player.current_position.x} y-{player.current_position.y}")
+# # print(player.next_position)

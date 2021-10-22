@@ -55,7 +55,7 @@ class Wall:
         game_field.graph.cleanup()
         tempField = copy.deepcopy(game_field)
         tempField.set_wall(wall)
-        tempField.set_graph()
+        tempField.graph = tempField.set_graph()
         if tempField.pathfinder([player1, player2]):
             del tempField
             return True
@@ -86,5 +86,5 @@ class Wall:
 
 
 # wall = Wall(Coordinate(0, 7), Coordinate(2, 7))
-# print(f"x middle - {wall.coordinates_middle.x} y middle - {wall.coordinates_middle.y}")
-# print(wall.is_length_correct)
+# # print(f"x middle - {wall.coordinates_middle.x} y middle - {wall.coordinates_middle.y}")
+# # print(wall.is_length_correct)

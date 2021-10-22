@@ -28,14 +28,15 @@ def startGame():
     while not playerOne.isWin() and not playerTwo.isWin():
         messages.print_field(game_field.field)
         game(list_of_players[counter], game_field, list_of_players)
+        game_field.graph = game_field.set_graph()
         moves += 1
         counter = 1 if counter == 0 else 0
         clear_console()
     end = datetime.now()
-    print(end - start)
-    print(moves)
-    print(playerOne.current_position.x, playerOne.current_position.y)
-    print(playerTwo.current_position.x, playerTwo.current_position.y)
+    # print(end - start)
+    # print(moves)
+    # print(playerOne.current_position.x, playerOne.current_position.y)
+    # print(playerTwo.current_position.x, playerTwo.current_position.y)
     messages.win_message(playerOne if playerOne.isWin() else playerTwo, game_field.field)
     if play() == "yes" or play() == "1":
         startGame()
@@ -58,19 +59,23 @@ def setWall(player, game_field, list_of_players):
                         wall = Wall.Wall(Coordinate.Coordinate(coordinates[0], coordinates[1]),
                                          Coordinate.Coordinate(coordinates[2], coordinates[3]), game_field)
                     except Exception as a:
-                        print(f"{a} !!!!!!!")
+                        pass
+                        # print(f"{a} !!!!!!!")
                     try:
                         first = wall.if_there_path_to_win(game_field, list_of_players[0], list_of_players[1], wall)
                     except Exception as b:
-                        print(f"{b} !!!!!!!")
+                        pass
+                        # print(f"{b} !!!!!!!")
                     try:
                         second = wall.between_two_pares
                     except Exception as c:
-                        print(f"{c} !!!!!!!")
+                        pass
+                        # print(f"{c} !!!!!!!")
                     try:
                         third = wall.is_there_another_wall
                     except Exception as d:
-                        print(f"{d} !!!!!!!")
+                        pass
+                        # print(f"{d} !!!!!!!")
                     if first and second and not third:
                         game_field.set_wall(wall)
                         player.decrease_wall_amount()
@@ -79,7 +84,7 @@ def setWall(player, game_field, list_of_players):
                         setWall(player, game_field, list_of_players)
 
                 except Exception as e:
-                    print("54")
+                    # print("54")
                     messages.wrong_action_message(e)
                     setWall(player, game_field, list_of_players)
             else:
