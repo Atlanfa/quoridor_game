@@ -55,27 +55,11 @@ def setWall(player, game_field, list_of_players):
             if len(coordinatesSplit) == 4:
                 try:
                     coordinates = [int(coordinate) for coordinate in coordinatesSplit]
-                    try:
-                        wall = Wall.Wall(Coordinate.Coordinate(coordinates[0], coordinates[1]),
-                                         Coordinate.Coordinate(coordinates[2], coordinates[3]), game_field)
-                    except Exception as a:
-                        pass
-                        # print(f"{a} !!!!!!!")
-                    try:
-                        first = wall.if_there_path_to_win(game_field, list_of_players[0], list_of_players[1], wall)
-                    except Exception as b:
-                        pass
-                        # print(f"{b} !!!!!!!")
-                    try:
-                        second = wall.between_two_pares
-                    except Exception as c:
-                        pass
-                        # print(f"{c} !!!!!!!")
-                    try:
-                        third = wall.is_there_another_wall
-                    except Exception as d:
-                        pass
-                        # print(f"{d} !!!!!!!")
+                    wall = Wall.Wall(Coordinate.Coordinate(coordinates[0], coordinates[1]),
+                                     Coordinate.Coordinate(coordinates[2], coordinates[3]), game_field)
+                    first = wall.if_there_path_to_win(game_field, list_of_players[0], list_of_players[1], wall)
+                    second = wall.between_two_pares
+                    third = wall.is_there_another_wall
                     if first and second and not third:
                         game_field.set_wall(wall)
                         player.decrease_wall_amount()
@@ -109,7 +93,7 @@ def playerMove(player, game_field, list_of_players):
                 game_field.move_player(player)
             else:
                 messages.wrong_action_message("74")
-                playerMove(player, game_field)
+                playerMove(player, game_field, list_of_players)
     except Exception:
         messages.wrong_action_message("77")
         playerMove(player, game_field, list_of_players)
