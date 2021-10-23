@@ -7,6 +7,8 @@ from utils import clear_console
 
 def startGame():
     game_field = GameField.GameField()
+    playerOne = Player.Player(True, 1)
+    playerTwo = Player.Player(False, 2)
     messages.with_who_you_want_to_play()
     whoIs = who()
     if whoIs == "1":
