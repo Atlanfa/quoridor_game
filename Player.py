@@ -11,6 +11,7 @@ class Player:
         self.can_move_here = None
         self.places_to_move = None
         self.action = None
+        self.jump_list = None
         self.isJump = False
         if self.player_number == 2:
             self._forWin = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
@@ -46,39 +47,62 @@ class Player:
             if self.check_up(game_field.field):
                 if not self.player_check_up(game_field.field, anotherPlayer.current_position):
                     list_of_possible_moves.append(self.up())
-                elif flag is False:
+                elif self.current_position.x - 3 >= 0 and game_field.field[self.current_position.x - 3][self.current_position.y] == 4 and flag is False:
                     self.isJump = True
                     list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
                                                                               list_of_possible_moves=list_of_possible_moves,
                                                                               anotherPlayer=self, flag=True)
+                elif self.current_position.x - 4 >= 0:
+                    list_of_possible_moves.append(Coordinate(self.current_position.x - 4, self.current_position.y))
+                    self.isJump = True
+
         if self.current_position.y + 2 <= 16:  # RIGHT
             if self.check_right(game_field.field):
                 if not self.player_check_right(game_field.field, anotherPlayer.current_position):
                     list_of_possible_moves.append(self.right())
-                elif flag is False:
+                elif self.current_position.y + 3 <= 16 and game_field.field[self.current_position.x][self.current_position.y + 3] == 4 and flag is False:
                     self.isJump = True
                     list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
                                                                               list_of_possible_moves=list_of_possible_moves,
                                                                               anotherPlayer=self, flag=True)
+                elif self.current_position.y + 4 <= 16:
+                    list_of_possible_moves.append(Coordinate(self.current_position.x, self.current_position.y + 4))
+                    self.isJump = True
+
         if self.current_position.x + 2 <= 16:  # DOWN
             if self.check_down(game_field.field):
                 if not self.player_check_down(game_field.field, anotherPlayer.current_position):
                     list_of_possible_moves.append(self.down())
-                elif flag is False:
+                elif self.current_position.x + 3 <= 16 and game_field.field[self.current_position.x + 3][self.current_position.y] == 4 and flag is False:
                     self.isJump = True
                     list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
                                                                               list_of_possible_moves=list_of_possible_moves,
                                                                               anotherPlayer=self, flag=True)
+                elif self.current_position.x + 4 <= 16:
+                    list_of_possible_moves.append(Coordinate(self.current_position.x + 4, self.current_position.y))
+                    self.isJump = True
+
         if self.current_position.y - 2 >= 0:  # LEFT
             if self.check_left(game_field.field):
                 if not self.player_check_left(game_field.field, anotherPlayer.current_position):
                     list_of_possible_moves.append(self.left())
-                elif flag is False:
+                elif self.current_position.y - 3 >= 0 and game_field.field[self.current_position.x][self.current_position.y - 3] == 4 and flag is False:
                     self.isJump = True
                     list_of_possible_moves = anotherPlayer.set_places_to_move(game_field,
                                                                               list_of_possible_moves=list_of_possible_moves,
                                                                               anotherPlayer=self, flag=True)
+                elif self.current_position.y - 4 >= 0:
+                    list_of_possible_moves.append(Coordinate(self.current_position.x, self.current_position.y - 4))
+                    self.isJump = True
+
         self.places_to_move = list_of_possible_moves
+        if not flag:
+            jmp = []
+            jmp.append(Coordinate(anotherPlayer.current_position.x + 2, anotherPlayer.current_position.y))
+            jmp.append(Coordinate(anotherPlayer.current_position.x - 2, anotherPlayer.current_position.y))
+            jmp.append(Coordinate(anotherPlayer.current_position.x, anotherPlayer.current_position.y - 2))
+            jmp.append(Coordinate(anotherPlayer.current_position.x, anotherPlayer.current_position.y + 2))
+            self.jump_list = jmp
         return list_of_possible_moves
 
     def set_next_position(self, coordinate):

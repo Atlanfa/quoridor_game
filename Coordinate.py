@@ -17,7 +17,6 @@ class Coordinate:
             if item.x == self.x and item.y == self.y:
                 return counter
             counter += 1
-        print('Ошибка:\n', traceback.format_exc())
         return None
 
 

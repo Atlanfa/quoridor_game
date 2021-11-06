@@ -43,8 +43,8 @@ def startGame():
     # print(playerOne.current_position.x, playerOne.current_position.y)
     # print(playerTwo.current_position.x, playerTwo.current_position.y)
     messages.win_message(playerOne if playerOne.isWin() else playerTwo, game_field.field)
-    if play() == "yes" or play() == "1":
-        startGame()
+    raise SystemExit(1)
+    # startGame()
 
 
 def setWall(player, game_field, list_of_players):
@@ -68,17 +68,18 @@ def setWall(player, game_field, list_of_players):
                     if first and second and not third:
                         game_field.set_wall(wall)
                         player.decrease_wall_amount()
-                        messages.send_wall(wall)
+                        if player.player_type is False:
+                            messages.send_wall(wall)
                     else:
                         messages.wrong_action_message("51")
-                        setWall(player, game_field, list_of_players)
+                        # setWall(player, game_field, list_of_players)
                 except Exception as e:
                     # print("54")
                     messages.wrong_action_message(e)
-                    setWall(player, game_field, list_of_players)
+                    # setWall(player, game_field, list_of_players)
             else:
                 messages.wrong_action_message("56")
-                setWall(player, game_field, list_of_players)
+                # setWall(player, game_field, list_of_players)
     else:
         game(player, game_field, list_of_players)
 
@@ -98,17 +99,18 @@ def playerMove(player, game_field, list_of_players):
             player.set_next_position(player.places_to_move[int(movePlayerInput) - 1])
             if player.can_move_here:  # Проверки на передвижение
                 game_field.move_player(player)
-                if player.isJump:
+                if player.isJump and player.player_type is False and player.next_position.is_in(player.jump_list) is not None:
                     messages.send_jump(player)
-                else:
+                elif player.player_type is False:
                     messages.send_move(player)
                 player.isJump = False
+                player.jump_list = None
             else:
                 messages.wrong_action_message("74")
-                playerMove(player, game_field, list_of_players)
+                # playerMove(player, game_field, list_of_players)
     except Exception as e:
         messages.wrong_action_message(e)
-        playerMove(player, game_field, list_of_players)
+        # playerMove(player, game_field, list_of_players)
 
 
 def game(player, game_field, list_of_players):
