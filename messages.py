@@ -1,5 +1,6 @@
 from Coordinate import Coordinate
 from GameField import GameField
+from Player import Player
 from Wall import Wall
 
 def send_wall(wall):
@@ -7,6 +8,12 @@ def send_wall(wall):
         print(f"wall {chr(int(wall.coordinates_middle.y / 2 + 96 + 19)).capitalize()}{int((wall.coordinates_middle.x + 1) / 2)}h")
     else:
         print(f"wall {chr(int(wall.coordinates_middle.y / 2 + 96 + 19)).capitalize()}{int((wall.coordinates_middle.x + 1) / 2)}v")
+
+def send_move(player):
+    print(f"move {chr(int(player.current_position.y / 2 + 96) + 1).capitalize()}{int(player.current_position.x / 2) + 1}")
+
+def send_jump(player):
+    print(f"jump {chr(int(player.current_position.y / 2 + 96) + 1).capitalize()}{int(player.current_position.x / 2) + 1}")
 
 def choose_action_message(player):
     print(f"{player.player_number} player turn, choose action.\n1 - Move hero.\n2 - Place the walll.")
@@ -112,11 +119,16 @@ def print_field(field):
 def with_who_you_want_to_play():
     print("Choose how to play:\n1)Play with human\n2)Play with bot\n3)Bot vs bot")
 
-gamef = GameField()
+# gamef = GameField()
 # walls = Wall(Coordinate(1, 0), Coordinate(1, 2), gamef)
-walls = Wall(Coordinate(14, 15), Coordinate(16, 15), gamef)
+# walls = Wall(Coordinate(14, 15), Coordinate(16, 15), gamef)
 # walls = Wall(Coordinate(2, 1), Coordinate(4, 1), gamef)
 # walls = Wall(Coordinate(2, 3), Coordinate(0, 3), gamef)
 # walls = Wall(Coordinate(1, 2), Coordinate(1, 4), gamef)
 # walls = Wall(Coordinate(15, 14), Coordinate(15, 16), gamef)
-send_wall(walls)
+# send_wall(walls)
+
+pla = Player(True, 1)
+pla.current_position.x = 16
+pla.current_position.y = 0
+send_move(pla)
