@@ -39,7 +39,7 @@ def get_action_from_opponent():
 def to_our_coordinates(temp):
     if temp[0] == "move":
         temp[0] = "1"
-        temp[1] = f"{backwards_calculating_point(ord(temp[1][0].lower()) - 96)} {backwards_calculating_point(int(temp[1][1]))}"
+        temp[1] = Coordinate(backwards_calculating_point(int(temp[1][1])), backwards_calculating_point(ord(temp[1][0].lower()) - 96))
     elif temp[0] == "wall":
         temp[0] = '2'
         if temp[1][2] == 'h':
@@ -54,7 +54,7 @@ def to_our_coordinates(temp):
 
 
 def who():
-    return "2" if input() == "black" else "3"
+    return "3" if input() == "black" else "2"
 
 
 def play():
@@ -62,7 +62,7 @@ def play():
     # return input()
 
 
-player = Player(True, 1)
+# player = Player(True, 1)
 
-print(enter(player, "choose"))
-print(enter(player, "wall"))
+# print(enter(player, "choose"))
+# print(enter(player, "wall"))

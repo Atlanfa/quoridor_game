@@ -1,3 +1,4 @@
+import traceback
 class Coordinate:
     def __init__(self, x, y):
         self.x = x
@@ -9,6 +10,15 @@ class Coordinate:
             return True if 0 <= self.x <= 16 and 0 <= self.y <= 16 else False
         except Exception:
             return False
+
+    def is_in(self, find):
+        counter = 1
+        for item in find:
+            if item.x == self.x and item.y == self.y:
+                return counter
+            counter += 1
+        print('Ошибка:\n', traceback.format_exc())
+        return None
 
 
 c1 = Coordinate("1", 1)

@@ -128,7 +128,7 @@ def with_who_you_want_to_play():
 # walls = Wall(Coordinate(15, 14), Coordinate(15, 16), gamef)
 # send_wall(walls)
 
-pla = Player(True, 1)
-pla.current_position.x = 16
-pla.current_position.y = 0
-send_move(pla)
+# pla = Player(True, 1)
+# pla.current_position.x = 16
+# pla.current_position.y = 0
+# send_move(pla)
