@@ -45,7 +45,7 @@ def print_places_to_move(places_to_move):
 
 def wrong_action_message(e=None):
     # print("You entered wrong action")
-    # print(e)
+    #print(e)
     pass
 
 
