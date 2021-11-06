@@ -11,6 +11,9 @@ def backwards_calculating_point(point):
     return point + (point - 2)
 
 
+
+
+
 def get_connected_points(field):
     connected_points = []
     for i in range(0, len(field), 2):

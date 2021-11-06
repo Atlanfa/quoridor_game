@@ -19,13 +19,16 @@ def startGame():
         playerTwo = Player.Player(False, 2)
     elif whoIs == "3":
         playerOne = Player.Player(False, 1)
+        playerTwo = Player.Player(True, 2)
+    elif whoIs == "4":
+        playerOne = Player.Player(False, 1)
         playerTwo = Player.Player(False, 2)
     else:
         messages.wrong_action_message("21")
         startGame()
     list_of_players = [playerOne, playerTwo]
     counter = 0
-    moves = 0 # Счётчик ходов
+    moves = 0  # Счётчик ходов
     start = datetime.now()
     while not playerOne.isWin() and not playerTwo.isWin():
         messages.print_field(game_field.field)
@@ -86,7 +89,7 @@ def playerMove(player, game_field, list_of_players):
     player.set_places_to_move(game_field, list_of_players)
     messages.print_places_to_move(player.places_to_move)
     try:
-        movePlayerInput = enter(player, "move") #
+        movePlayerInput = enter(player, "move")  #
         if movePlayerInput == "back":
             game(player, game_field, list_of_players)
         elif int(movePlayerInput) in range(1, len(player.places_to_move) + 1):

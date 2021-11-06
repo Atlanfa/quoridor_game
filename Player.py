@@ -10,6 +10,7 @@ class Player:
         self.next_position = None
         self.can_move_here = None
         self.places_to_move = None
+        self.action = None
         if self.player_number == 2:
             self._forWin = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
         else:
