@@ -1,1 +1,2 @@
-pathfinding
+pathfinding~=1.0.1
+infinity~=1.5
