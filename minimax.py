@@ -2,7 +2,7 @@ from infinity import inf
 
 
 def minimax(game_field, depth, alpha, beta, maximizing_player):
-    if depth == 0 or game_field.game_over():                    # TODO game_field.game_over()
+    if depth == 0 or game_field.game_over():
         return static_evaluation_of_game_field(game_field)      # TODO
 
     if maximizing_player:

@@ -77,6 +77,9 @@ class GameField:
         self.field = self.get_start_field()
         self.graph = self.set_graph()
 
+    def game_over(self):
+        return True if 1 in self.field[0] or 2 in self.field[-1] else False
+
     @staticmethod
     def get_start_field():
         return field_preparation(fill_the_field())
