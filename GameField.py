@@ -11,9 +11,6 @@ def backwards_calculating_point(point):
     return point + (point - 2)
 
 
-
-
-
 def get_connected_points(field):
     connected_points = []
     for i in range(0, len(field), 2):
@@ -85,13 +82,13 @@ class GameField:
         return field_preparation(fill_the_field())
 
     def set_graph(self):
-        grid = Grid(matrix=self.graphPrepare(self.field))
+        grid = Grid(matrix=self.graph_prepare(self.field))
         return grid
 
-    def pathfinder(self, players):  # players - список игроков, field - экземпляр класса GameField
+    def path_finder(self, players):  # players - список игроков, field - экземпляр класса GameField
         grid = self.graph
-        fpWay = False  # Есть ли путь для первого игрока
-        spWay = False  # Есть ли путь для второго игрока
+        fp_way = False  # Есть ли путь для первого игрока
+        sp_way = False  # Есть ли путь для второго игрока
 
         for win in players[0].for_win:
             grid.cleanup()
@@ -103,7 +100,7 @@ class GameField:
             # # print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
             # # print(grid.grid_str(path=path, start=start, end=end))
             if len(path) >= 2:
-                fpWay = True
+                fp_way = True
                 break
         for win in players[1].for_win:
             grid.cleanup()
@@ -115,32 +112,33 @@ class GameField:
             # # print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
             # # print(grid.grid_str(path=path, start=start, end=end))
             if len(path) >= 2:
-                spWay = True
+                sp_way = True
                 break
-        if fpWay and spWay:
+        if fp_way and sp_way:
             return True
         else:
             return False
 
-    def graphPrepare(self, field):
-        tempField = []
+    @staticmethod
+    def graph_prepare(field):
+        temp_field = []
         for i in range(len(field[0])):
-            tempField.append([])
+            temp_field.append([])
             for j in range(len(field[1])):
                 if field[i][j] == 0:
-                    tempField[i].append(2)  # Пустая клетка
+                    temp_field[i].append(2)  # Пустая клетка
                 elif field[i][j] == 3:
-                    tempField[i].append(2)  # Пустая стенка
+                    temp_field[i].append(2)  # Пустая стенка
                 elif field[i][j] == 4:
-                    tempField[i].append(0)  # Стенка
+                    temp_field[i].append(0)  # Стенка
                 elif field[i][j] == 5:
-                    tempField[i].append(0)  # Стенка
+                    temp_field[i].append(0)  # Стенка
                 elif field[i][j] == 1:
-                    tempField[i].append(1)  # Игрок
+                    temp_field[i].append(1)  # Игрок
                 elif field[i][j] == 2:
-                    tempField[i].append(1)  # Игрок
+                    temp_field[i].append(1)  # Игрок
 
-        return tempField
+        return temp_field
 
     def set_wall(self, wall):
         self.field[wall.coordinates_start.x][wall.coordinates_start.y] = 4

@@ -8,7 +8,7 @@ def if_there_path_to_win(game_field, player1, player2, wall):
     temp_field = copy.deepcopy(game_field)
     temp_field.set_wall(wall)
     temp_field.graph = temp_field.set_graph()
-    if temp_field.pathfinder([player1, player2]):
+    if temp_field.path_finder([player1, player2]):
         del temp_field
         return True
     else:

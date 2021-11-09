@@ -55,7 +55,7 @@ def start_game():
     # startGame()
 
 
-def set_wall(player, game_field, list_of_players, counter = 0):
+def set_wall(player, game_field, list_of_players, counter=0):
     # clear_console()
     # print_field(game_field.field)
     if counter < 5:
@@ -107,11 +107,12 @@ def player_move(player, game_field, list_of_players):
             move_player_input = move_player_input.is_in(player.places_to_move)
         if move_player_input == "back":
             game(player, game_field, list_of_players)
-        #elif int(move_player_input) in range(1, len(player.places_to_move) + 1):
+        # elif int(move_player_input) in range(1, len(player.places_to_move) + 1):
         player.set_next_position(player.places_to_move[int(move_player_input) - 1])
         if player.can_move_here:  # Проверки на передвижение
             game_field.move_player(player)
-            if player.is_jump and player.player_type is False and player.current_position.is_in(player.jump_list) is not None:
+            if player.is_jump and player.player_type is False and player.current_position.is_in(
+                    player.jump_list) is not None:
                 send_jump(player)
             elif player.player_type is False:
                 send_move(player)
@@ -123,7 +124,7 @@ def player_move(player, game_field, list_of_players):
             player_move(player, game_field, list_of_players)
     except Exception as e:
         # wrong_action_message(e)
-        #playerMove(player, game_field, list_of_players)
+        # playerMove(player, game_field, list_of_players)
         pass
 
 
