@@ -1,4 +1,3 @@
-import traceback
 class Coordinate:
     def __init__(self, x, y):
         self.x = x
@@ -20,5 +19,5 @@ class Coordinate:
         return None
 
 
-c1 = Coordinate("1", 1)
+# c1 = Coordinate("1", 1)
 # print(c1.is_correct)

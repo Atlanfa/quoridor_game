@@ -10,7 +10,7 @@ def enter(player, types):
         if player.player_type:
             return player.action[1]
         elif not player.player_type:
-            return placeWall()
+            return place_wall()
             pass
     elif types == "move":
         if player.player_type:

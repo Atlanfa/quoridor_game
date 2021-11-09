@@ -9,7 +9,7 @@ def move(player):
     return randint(1, len(player.places_to_move))
 
 
-def placeWall():
+def place_wall():
     x = randint(0, 16)
     y = 0
     x2 = 0
@@ -25,7 +25,7 @@ def placeWall():
             else:
                 y2 = y + 2
         else:
-            return placeWall()
+            return place_wall()
     else:
         y = randint(1, 15)
         while y % 2 == 0:
@@ -37,5 +37,5 @@ def placeWall():
             else:
                 x2 = x + 2
         else:
-            return placeWall()
+            return place_wall()
     return f"{x} {y} {x2} {y2}"

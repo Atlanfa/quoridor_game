@@ -93,7 +93,7 @@ class GameField:
         fpWay = False  # Есть ли путь для первого игрока
         spWay = False  # Есть ли путь для второго игрока
 
-        for win in players[0].forWin:
+        for win in players[0].for_win:
             grid.cleanup()
             start = grid.node(players[0].current_position.y, players[0].current_position.x)
             end = grid.node(win[1], win[0])
@@ -105,7 +105,7 @@ class GameField:
             if len(path) >= 2:
                 fpWay = True
                 break
-        for win in players[1].forWin:
+        for win in players[1].for_win:
             grid.cleanup()
             start = grid.node(players[1].current_position.y, players[1].current_position.x)
             end = grid.node(win[1], win[0])
