@@ -10,10 +10,13 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         else:
             paths_for_first, paths_for_second = get_paths_to_win(game_field, player_two, player_one)
         return static_evaluation_of_game_field(paths_for_first, paths_for_second)
-
+    paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
     if maximizing_player:
         max_evaluation = -inf
-        for position in get_all_moves(game_field):               # TODO
+        walls = get_all_walls(game_field, player_one, paths_for_first)
+        all_moves = get_all_moves(game_field)
+        possible_moves = walls + all_moves
+        for position in possible_moves:               # TODO
             evaluation = minimax(position, depth - 1, alpha, beta, False, player_two, player_one)
             max_evaluation = max(max_evaluation, evaluation)
             alpha = max(alpha, evaluation)
@@ -22,7 +25,10 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         return max_evaluation
     else:
         min_evaluation = +inf
-        for position in get_all_moves(game_field):               # TODO
+        walls = get_all_walls(game_field, player_two, paths_for_second)
+        all_moves = get_all_moves(game_field)
+        possible_moves = walls + all_moves
+        for position in possible_moves:               # TODO
             evaluation = minimax(position, depth - 1, alpha, beta, True, player_one, player_two)
             min_evaluation = min(min_evaluation, evaluation)
             beta = min(beta, evaluation)
@@ -67,3 +73,5 @@ def static_evaluation_of_game_field(paths_for_first, paths_for_second):
     return evaluation
 
 
+def get_all_walls(game_field, player, path_to_win):
+    walls = [wall if wall[0] % 2 == 0 and wall[1] % 2 == 0 else path_to_win.pop(wall) for wall in path_to_win]
