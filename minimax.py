@@ -5,7 +5,11 @@ from pathfinding.finder.a_star import AStarFinder
 
 def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
     if depth == 0 or game_field.game_over():
-        return static_evaluation_of_game_field(game_field, player_one, player_two) if maximizing_player else static_evaluation_of_game_field(game_field, player_two, player_one)
+        if maximizing_player:
+            paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
+        else:
+            paths_for_first, paths_for_second = get_paths_to_win(game_field, player_two, player_one)
+        return static_evaluation_of_game_field(paths_for_first, paths_for_second)
 
     if maximizing_player:
         max_evaluation = -inf
@@ -27,10 +31,20 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         return min_evaluation
 
 
-def static_evaluation_of_game_field(game_field, player_one, player_two):
+def static_evaluation_of_game_field(paths_for_first, paths_for_second):
+    evaluations_for_first = [len(path) for path in paths_for_first]
+    evaluations_for_second = [len(path) for path in paths_for_second]
+    min_first = min(evaluations_for_first)
+    min_second = min(evaluations_for_second)
+    evaluation = min_first - min_second
+
+    return evaluation
+
+
+def get_paths_to_win(game_field, player_one, player_two):
     grid = game_field.graph
-    evaluations_for_first = []
-    evaluations_for_second = []
+    paths_for_first = []
+    paths_for_second = []
     for win_position in player_one.for_win:
         grid.cleanup()
         start = grid.node(player_one.current_position.y, player_one.current_position.x)
@@ -39,7 +53,7 @@ def static_evaluation_of_game_field(game_field, player_one, player_two):
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
         if len(path) >= 2:
-            evaluations_for_first.append(len(path))
+            paths_for_first.append(path)
     for win_position in player_two.for_win:
         grid.cleanup()
         start = grid.node(player_two.current_position.y, player_two.current_position.x)
@@ -48,9 +62,6 @@ def static_evaluation_of_game_field(game_field, player_one, player_two):
         finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
         path, runs = finder.find_path(start, end, grid)
         if len(path) >= 2:
-            evaluations_for_second.append(len(path))
-    min_first = min(evaluations_for_first)
-    min_second = min(evaluations_for_second)
-    evaluation = min_first - min_second
+            paths_for_second.append(path)
 
-    return evaluation
+    return paths_for_first, paths_for_second
