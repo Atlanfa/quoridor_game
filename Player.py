@@ -14,9 +14,11 @@ class Player:
         self.jump_list = None
         self.is_jump = False
         if self.player_number == 2:
-            self._for_win = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
+            # self._for_win = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
+            self._for_win = [[16, 0], [16, 2]]
         else:
-            self._for_win = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12], [0, 14], [0, 16]]
+            # self._for_win = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12], [0, 14], [0, 16]]
+            self._for_win = [[0, 0], [0, 2]]
 
     def is_win(self):
         if self.player_number == 1:
@@ -130,12 +132,15 @@ class Player:
         return list_of_possible_moves
 
     def set_next_position(self, coordinate):
-        if coordinate.is_correct and coordinate in self.places_to_move:
-            self.next_position = coordinate
-            self.can_move_here = True
-        else:
-            self.next_position = None
-            self.can_move_here = False
+        # if coordinate.is_correct and coordinate in self.places_to_move:
+        for places in self.places_to_move:
+            if coordinate.is_correct and coordinate.x == places.x and coordinate.y == places.y:
+                self.next_position = coordinate
+                self.can_move_here = True
+                break
+            else:
+                self.next_position = None
+                self.can_move_here = False
 
     def up(self):
         return Coordinate(self.current_position.x - 2, self.current_position.y)

@@ -21,7 +21,7 @@ def call_minimax(game_field, depth, alpha, beta, maximizing_player, player_one, 
     moves = []
     eval, moves = minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves)
     for step in moves:
-        if step.depth == depth - 1 and step.minimax_eval > eval:
+        if step.depth == depth - 1 and step.minimax_eval == eval:
             return step.action
 
 
@@ -30,10 +30,16 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
     if depth == 0 or game_field.game_over():
         if maximizing_player:
             paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
+            paths_for_first = min(paths_for_first)
+            paths_for_second = min(paths_for_second)
         else:
             paths_for_first, paths_for_second = get_paths_to_win(game_field, player_two, player_one)
+            paths_for_first = min(paths_for_first)
+            paths_for_second = min(paths_for_second)
         return static_evaluation_of_game_field(paths_for_first, paths_for_second), moves
     paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
+    paths_for_first = min(paths_for_first)
+    paths_for_second = min(paths_for_second)
     if maximizing_player:
         max_evaluation = -inf
         walls = get_all_walls(game_field, player_one, player_two, paths_for_first)
@@ -41,9 +47,10 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         possible_moves = walls + all_moves
         for move in possible_moves:
             moves.append(Minimax(move[0], move[1], move[2], move[3]))
+        print(len(moves))
         for position in moves:
             position.depth = depth - 1
-            evaluation, moves = minimax(position.game_field, depth - 1, alpha, beta, False, position.player_two, position.player_one, moves)
+            evaluation, moves = minimax(position.game_field, position.depth, alpha, beta, False, position.player_two, position.player_one, moves)
             max_evaluation = max(max_evaluation, evaluation)
             alpha = max(alpha, evaluation)
             position.minimax_eval = max_evaluation
@@ -57,9 +64,10 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         possible_moves = walls + all_moves
         for move in possible_moves:
             moves.append(Minimax(move[0], move[1], move[2], move[3]))
+        print(len(moves))
         for position in moves:
             position.depth = depth - 1
-            evaluation, moves = minimax(position.game_field, depth - 1, alpha, beta, True, position.player_one, position.player_two, moves)
+            evaluation, moves = minimax(position.game_field, position.depth, alpha, beta, True, position.player_one, position.player_two, moves)
             min_evaluation = min(min_evaluation, evaluation)
             beta = min(beta, evaluation)
             position.minimax_eval = min_evaluation
@@ -108,13 +116,16 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
     if player_one.walls_amount > 0:
         walls = []
         del path_to_win[0::2]
-        for wallss in path_to_win:
-            for wall in wallss:
-                if wall[0] % 2 == 0:
+        for wall in path_to_win:
+            if wall[0] % 2 == 0:
+                if wall[0] - 2 >= 0:
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] - 2), game_field))
+                if wall[0] + 2 <= 16:
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] + 2), game_field))
-                else:
+            else:
+                if wall[1] - 2 >= 0:
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] - 2, wall[0]), game_field))
+                if wall[1] + 2 <= 16:
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] + 2, wall[0]), game_field))
         for wall in walls:
             first = if_there_path_to_win(game_field, player_one, player_two, wall)

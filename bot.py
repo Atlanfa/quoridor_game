@@ -1,35 +1,41 @@
 from random import randint
 from infinity import inf
 from datetime import datetime
+from Wall import Wall
 
 import minimax
 
 
 class Bot:
-    action = None
-    coordinate = None
+    def __init__(self, act, coord):
+        self.action = act
+        self.coordinate = coord
 
+
+bot_action = Bot(None, None)
 
 def choose(player, game_field, list_of_players):
     # return str(randint(1, 2))
     start = datetime.now()
     print("CHOOSE")
-    list_of_players.remove(player)
-    bot_action = minimax.call_minimax(game_field, depth=1, alpha=-inf, beta=+inf, maximizing_player=True, player_one=player,
-                         player_two=list_of_players[0])
-    if type(bot_action) == Wall:
-        Bot.action == 2
-        Bot.coordinate = bot_action
+    player_two = list_of_players[1] if list_of_players[0].player_number == player.player_number else list_of_players[0]
+    bot_doing = minimax.call_minimax(game_field, depth=1, alpha=-inf, beta=+inf, maximizing_player=True, player_one=player,
+                         player_two=player_two)
+    if type(bot_doing) == Wall:
+        bot_action.action = "2"
+        bot_action.coordinate = bot_doing
     else:
-        Bot.action = 1
-        Bot.coordinate = bot_action
+        bot_action.action = "1"
+        bot_action.coordinate = bot_doing
     print(datetime.now() - start)
-    return Bot.action
+    return bot_action.action
 
 
 def move(player):
     # return randint(1, len(player.places_to_move))
-    return player.places_to_move.index(Bot.coordinate)
+    for index, step in enumerate(player.places_to_move):
+        if step.x == bot_action.coordinate.x and step.y == bot_action.coordinate.y:
+            return index
 
 def place_wall():
     # x = randint(0, 16)
@@ -61,4 +67,4 @@ def place_wall():
     #     else:
     #         return place_wall()
     # return f"{x} {y} {x2} {y2}"
-    return f"{Bot.coordinate.coordinates_start.x} {Bot.coordinate.coordinates_start.y} {Bot.coordinate.coordinates_end.x} {Bot.coordinate.coordinates_end.y}"
+    return f"{bot_action.coordinate.coordinates_start.x} {bot_action.coordinate.coordinates_start.y} {bot_action.coordinate.coordinates_end.x} {bot_action.coordinate.coordinates_end.y}"
