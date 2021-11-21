@@ -1,5 +1,6 @@
 from random import randint
 from infinity import inf
+from datetime import datetime
 
 import minimax
 
@@ -11,8 +12,10 @@ class Bot:
 
 def choose(player, game_field, list_of_players):
     # return str(randint(1, 2))
+    start = datetime.now()
+    print("CHOOSE")
     list_of_players.remove(player)
-    bot_action = minimax.call_minimax(game_field, depth=3, alpha=-inf, beta=+inf, maximizing_player=True, player_one=player,
+    bot_action = minimax.call_minimax(game_field, depth=1, alpha=-inf, beta=+inf, maximizing_player=True, player_one=player,
                          player_two=list_of_players[0])
     if type(bot_action) == Wall:
         Bot.action == 2
@@ -20,6 +23,7 @@ def choose(player, game_field, list_of_players):
     else:
         Bot.action = 1
         Bot.coordinate = bot_action
+    print(datetime.now() - start)
     return Bot.action
 
 

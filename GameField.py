@@ -100,9 +100,9 @@ class GameField:
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
             path, runs = finder.find_path(start, end, grid)
-            print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
-            for move in path:
-                print(move)
+            # print('operations:', runs, 'path length:', len(path)) #Тестовый вывод
+            # for move in path:
+            #     print(move)
             # # print(grid.grid_str(path=path, start=start, end=end))
             if len(path) >= 2:
                 fp_way = True
