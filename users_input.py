@@ -5,7 +5,7 @@ from Wall import Wall
 from bot import *
 
 
-def enter(player, types):
+def enter(player, types, game_field = None, list_of_players = None):
     if types == "wall":
         if player.player_type:
             return player.action[1]
@@ -23,7 +23,7 @@ def enter(player, types):
             player.action = get_action_from_opponent()
             return player.action[0]
         elif not player.player_type:
-            return choose()
+            return choose(player, game_field, list_of_players)
             pass
     elif types == "playAgain":
         if player.player_type:

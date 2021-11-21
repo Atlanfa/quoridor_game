@@ -132,7 +132,7 @@ def game(player, game_field, list_of_players):
     # clear_console()
     # print_field(game_field.field)
     # choose_action_message(player)
-    game_input = enter(player, "choose")
+    game_input = enter(player, "choose", game_field, list_of_players)
     if game_input == "1":
         player_move(player, game_field, list_of_players)
     elif game_input == "2":

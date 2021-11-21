@@ -20,7 +20,11 @@ class Minimax:
 def call_minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
     moves = []
     eval, moves = minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves)
-    # TODO
+    for step in moves:
+        if step.depth == depth - 1 and step.minimax_eval > eval:
+            return step.action
+
+
 
 def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves):
     if depth == 0 or game_field.game_over():
@@ -104,13 +108,14 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
     if player_one.walls_amount > 0:
         walls = []
         del path_to_win[0::2]
-        for wall in path_to_win:
-            if wall[0] % 2 == 0:
-                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] - 2), game_field))
-                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] + 2), game_field))
-            else:
-                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] - 2, wall[0]), game_field))
-                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] + 2, wall[0]), game_field))
+        for wallss in path_to_win:
+            for wall in wallss:
+                if wall[0] % 2 == 0:
+                    walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] - 2), game_field))
+                    walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] + 2), game_field))
+                else:
+                    walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] - 2, wall[0]), game_field))
+                    walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] + 2, wall[0]), game_field))
         for wall in walls:
             first = if_there_path_to_win(game_field, player_one, player_two, wall)
             second = wall.between_two_pares
