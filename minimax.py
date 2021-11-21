@@ -1,6 +1,11 @@
+import copy
+
 from infinity import inf
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.finder.a_star import AStarFinder
+
+from Coordinate import Coordinate
+from Wall import Wall, if_there_path_to_win
 
 
 def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
@@ -14,7 +19,7 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
     if maximizing_player:
         max_evaluation = -inf
         walls = get_all_walls(game_field, player_one, paths_for_first)
-        all_moves = get_all_moves(game_field)
+        all_moves = get_all_moves(game_field, player_one, player_two)
         possible_moves = walls + all_moves
         for position in possible_moves:               # TODO
             evaluation = minimax(position, depth - 1, alpha, beta, False, player_two, player_one)
@@ -26,7 +31,7 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
     else:
         min_evaluation = +inf
         walls = get_all_walls(game_field, player_two, paths_for_second)
-        all_moves = get_all_moves(game_field)
+        all_moves = get_all_moves(game_field, player_two, player_one)
         possible_moves = walls + all_moves
         for position in possible_moves:               # TODO
             evaluation = minimax(position, depth - 1, alpha, beta, True, player_one, player_two)
@@ -73,5 +78,41 @@ def static_evaluation_of_game_field(paths_for_first, paths_for_second):
     return evaluation
 
 
-def get_all_walls(game_field, player, path_to_win):
-    walls = [wall if wall[0] % 2 == 0 and wall[1] % 2 == 0 else path_to_win.pop(wall) for wall in path_to_win]
+def get_all_walls(game_field, player_one, player_two, path_to_win):
+    game_fields = []
+    if player_one.walls_amount > 0:
+        walls = []
+        del path_to_win[0::2]
+        for wall in path_to_win:
+            if wall[0] % 2 == 0:
+                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] - 2), game_field))
+                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1], wall[0] + 2), game_field))
+            else:
+                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] - 2, wall[0]), game_field))
+                walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] + 2, wall[0]), game_field))
+        for wall in walls:
+            first = if_there_path_to_win(game_field, player_one, player_two, wall)
+            second = wall.between_two_pares
+            third = wall.is_there_another_wall
+            four = wall.is_length_correct
+            if first and second and not third and four:
+                temp_field = copy.deepcopy(game_field)
+                temp_field.set_wall(wall)
+                temp_player = copy.deepcopy(player_one)
+                temp_player.decrease_wall_amount()
+                game_fields.append((temp_field, temp_player, player_two))
+    return game_fields
+
+
+def get_all_moves(game_field, player_one, player_two):
+    game_fields = []
+    player_one_moves = player_one.set_places_to_move(game_field, [player_one, player_two])
+    for move in player_one_moves:
+        tem_field = copy.deepcopy(game_field)
+        tem_player = copy.deepcopy(player_one)
+        tem_player.set_next_position(move)
+        if tem_player.can_move_here:
+            tem_field.move_player(tem_player)
+            game_fields.append((tem_field, tem_player, player_two))
+    return game_fields
+
