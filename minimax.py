@@ -8,6 +8,10 @@ from Coordinate import Coordinate
 from Wall import Wall, if_there_path_to_win
 
 
+class Minimax:
+    def __init__(self, ):
+
+
 def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
     if depth == 0 or game_field.game_over():
         if maximizing_player:
@@ -18,11 +22,11 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
     paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
     if maximizing_player:
         max_evaluation = -inf
-        walls = get_all_walls(game_field, player_one, paths_for_first)
+        walls = get_all_walls(game_field, player_one, paths_for_first, paths_for_first)
         all_moves = get_all_moves(game_field, player_one, player_two)
         possible_moves = walls + all_moves
-        for position in possible_moves:               # TODO
-            evaluation = minimax(position, depth - 1, alpha, beta, False, player_two, player_one)
+        for position in possible_moves:
+            evaluation = minimax(position[0], depth - 1, alpha, beta, False, position[2], position[1])
             max_evaluation = max(max_evaluation, evaluation)
             alpha = max(alpha, evaluation)
             if beta <= alpha:
@@ -30,11 +34,11 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         return max_evaluation
     else:
         min_evaluation = +inf
-        walls = get_all_walls(game_field, player_two, paths_for_second)
+        walls = get_all_walls(game_field, player_two, paths_for_second, paths_for_second)
         all_moves = get_all_moves(game_field, player_two, player_one)
         possible_moves = walls + all_moves
-        for position in possible_moves:               # TODO
-            evaluation = minimax(position, depth - 1, alpha, beta, True, player_one, player_two)
+        for position in possible_moves:
+            evaluation = minimax(position[0], depth - 1, alpha, beta, True, position[1], position[2])
             min_evaluation = min(min_evaluation, evaluation)
             beta = min(beta, evaluation)
             if beta <= alpha:
@@ -100,7 +104,7 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
                 temp_field.set_wall(wall)
                 temp_player = copy.deepcopy(player_one)
                 temp_player.decrease_wall_amount()
-                game_fields.append((temp_field, temp_player, player_two))
+                game_fields.append((temp_field, temp_player, player_two, wall))
     return game_fields
 
 
@@ -113,6 +117,6 @@ def get_all_moves(game_field, player_one, player_two):
         tem_player.set_next_position(move)
         if tem_player.can_move_here:
             tem_field.move_player(tem_player)
-            game_fields.append((tem_field, tem_player, player_two))
+            game_fields.append((tem_field, tem_player, player_two, tem_player.next_position))
     return game_fields
 
