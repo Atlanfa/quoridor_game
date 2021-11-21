@@ -17,8 +17,12 @@ class Minimax:
         self.depth = -1
         self.minimax_eval = -inf
 
+def call_minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
+    moves = []
+    eval, moves = minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves)
+    # TODO
 
-def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
+def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves):
     if depth == 0 or game_field.game_over():
         if maximizing_player:
             paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
@@ -31,25 +35,33 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         walls = get_all_walls(game_field, player_one, paths_for_first, paths_for_first)
         all_moves = get_all_moves(game_field, player_one, player_two)
         possible_moves = walls + all_moves
+        for move in possible_moves:
+            moves.append(Minimax(move[0], move[1], move[2], move[3]))
         for position in possible_moves:
-            evaluation = minimax(position[0], depth - 1, alpha, beta, False, position[2], position[1])
+            position.depth = depth - 1
+            evaluation = minimax(position.game_field, depth - 1, alpha, beta, False, position.player_two, position.player_one, moves)
             max_evaluation = max(max_evaluation, evaluation)
             alpha = max(alpha, evaluation)
+            position.minimax_eval = min_evaluation
             if beta <= alpha:
                 break
-        return max_evaluation
+        return max_evaluation, moves
     else:
         min_evaluation = +inf
         walls = get_all_walls(game_field, player_two, paths_for_second, paths_for_second)
         all_moves = get_all_moves(game_field, player_two, player_one)
         possible_moves = walls + all_moves
-        for position in possible_moves:
-            evaluation = minimax(position[0], depth - 1, alpha, beta, True, position[1], position[2])
+        for move in possible_moves:
+            moves.append(Minimax(move[0], move[1], move[2], move[3]))
+        for position in moves:
+            position.depth = depth - 1
+            evaluation = minimax(position.game_field, depth - 1, alpha, beta, True, position.player_one, position.player_two, moves)
             min_evaluation = min(min_evaluation, evaluation)
             beta = min(beta, evaluation)
+            position.minimax_eval = min_evaluation
             if beta <= alpha:
                 break
-        return min_evaluation
+        return min_evaluation, moves
 
 
 def get_paths_to_win(game_field, player_one, player_two):
@@ -76,7 +88,6 @@ def get_paths_to_win(game_field, player_one, player_two):
             paths_for_second.append(path)
 
     return paths_for_first, paths_for_second
-
 
 def static_evaluation_of_game_field(paths_for_first, paths_for_second):
     evaluations_for_first = [len(path) for path in paths_for_first]
