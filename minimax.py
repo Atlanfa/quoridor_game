@@ -9,7 +9,13 @@ from Wall import Wall, if_there_path_to_win
 
 
 class Minimax:
-    def __init__(self, ):
+    def __init__(self, game_field, player_one, player_two, action):
+        self.game_field = game_field
+        self.player_one = player_one
+        self.player_two = player_two
+        self.action = action
+        self.depth = -1
+        self.minimax_eval = -inf
 
 
 def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
