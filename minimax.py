@@ -65,3 +65,4 @@ def get_paths_to_win(game_field, player_one, player_two):
             paths_for_second.append(path)
 
     return paths_for_first, paths_for_second
+
