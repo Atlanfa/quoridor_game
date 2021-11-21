@@ -31,16 +31,6 @@ def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, playe
         return min_evaluation
 
 
-def static_evaluation_of_game_field(paths_for_first, paths_for_second):
-    evaluations_for_first = [len(path) for path in paths_for_first]
-    evaluations_for_second = [len(path) for path in paths_for_second]
-    min_first = min(evaluations_for_first)
-    min_second = min(evaluations_for_second)
-    evaluation = min_first - min_second
-
-    return evaluation
-
-
 def get_paths_to_win(game_field, player_one, player_two):
     grid = game_field.graph
     paths_for_first = []
@@ -65,4 +55,15 @@ def get_paths_to_win(game_field, player_one, player_two):
             paths_for_second.append(path)
 
     return paths_for_first, paths_for_second
+
+
+def static_evaluation_of_game_field(paths_for_first, paths_for_second):
+    evaluations_for_first = [len(path) for path in paths_for_first]
+    evaluations_for_second = [len(path) for path in paths_for_second]
+    min_first = min(evaluations_for_first)
+    min_second = min(evaluations_for_second)
+    evaluation = min_first - min_second
+
+    return evaluation
+
 
