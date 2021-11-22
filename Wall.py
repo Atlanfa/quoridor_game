@@ -1,6 +1,6 @@
 from Coordinate import Coordinate
 import copy
-from GameField import calculate_point, get_connected_points, GameField
+from GameField import calculate_point, get_connected_points
 from datetime import datetime
 
 
