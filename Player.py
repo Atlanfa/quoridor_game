@@ -14,11 +14,11 @@ class Player:
         self.jump_list = None
         self.is_jump = False
         if self.player_number == 2:
-            # self._for_win = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
-            self._for_win = [[16, 0], [16, 2]]
+            self._for_win = [[16, 0], [16, 2], [16, 4], [16, 6], [16, 8], [16, 10], [16, 12], [16, 14], [16, 16]]
+            # self._for_win = [[16, 0], [16, 2]]
         else:
-            # self._for_win = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12], [0, 14], [0, 16]]
-            self._for_win = [[0, 0], [0, 2]]
+            self._for_win = [[0, 0], [0, 2], [0, 4], [0, 6], [0, 8], [0, 10], [0, 12], [0, 14], [0, 16]]
+            # self._for_win = [[0, 0], [0, 2]]
 
     def is_win(self):
         if self.player_number == 1:

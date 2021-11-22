@@ -2,6 +2,7 @@ from random import randint
 from infinity import inf
 from datetime import datetime
 from Wall import Wall
+from minimax import timeit
 
 import minimax
 
@@ -14,20 +15,18 @@ class Bot:
 
 bot_action = Bot(None, None)
 
+@timeit
 def choose(player, game_field, list_of_players):
     # return str(randint(1, 2))
-    start = datetime.now()
-    print("CHOOSE")
     player_two = list_of_players[1] if list_of_players[0].player_number == player.player_number else list_of_players[0]
-    bot_doing = minimax.call_minimax(game_field, depth=1, alpha=-inf, beta=+inf, maximizing_player=True, player_one=player,
+    bot_doing = minimax.call_minimax(game_field, depth=2, alpha=-inf, beta=+inf, maximizingPlayer=True, player_one=player,
                          player_two=player_two)
-    if type(bot_doing) == Wall:
+    if type(bot_doing) == Wall or type(bot_doing) == Wall:
         bot_action.action = "2"
         bot_action.coordinate = bot_doing
     else:
         bot_action.action = "1"
         bot_action.coordinate = bot_doing
-    print(datetime.now() - start)
     return bot_action.action
 
 
@@ -35,7 +34,7 @@ def move(player):
     # return randint(1, len(player.places_to_move))
     for index, step in enumerate(player.places_to_move):
         if step.x == bot_action.coordinate.x and step.y == bot_action.coordinate.y:
-            return index
+            return index + 1
 
 def place_wall():
     # x = randint(0, 16)

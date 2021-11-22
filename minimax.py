@@ -6,77 +6,106 @@ from pathfinding.finder.a_star import AStarFinder
 
 from Coordinate import Coordinate
 from Wall import Wall, if_there_path_to_win
+import time
 
+def timeit(func):
+    """
+    Декоратор для измерения времени работы функции.
+    """
+    def measure_time(*args, **kw):
+        start_time = time.time()
+        result = func(*args, **kw)
+        print("Processing time of %s(): %.2f seconds."
+              % (func.__qualname__, time.time() - start_time))
+        return result
+
+    return measure_time
+
+counter = 0
 
 class Minimax:
-    def __init__(self, game_field, player_one, player_two, action):
+    def __init__(self, game_field, player_one, player_two, action=None, depth=+inf, parrent=None):
         self.game_field = game_field
         self.player_one = player_one
         self.player_two = player_two
         self.action = action
-        self.depth = -1
-        self.minimax_eval = -inf
-
-def call_minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two):
-    moves = []
-    eval, moves = minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves)
-    for step in moves:
-        if step.depth == depth - 1 and step.minimax_eval == eval:
-            return step.action
+        self.depth = depth
+        self.minimax_eval = None
+        self.child = []
+        self.parrent = None
+        self.player_one_path = None
+        self.player_two_path = None
 
 
 
-def minimax(game_field, depth, alpha, beta, maximizing_player, player_one, player_two, moves):
-    if depth == 0 or game_field.game_over():
-        if maximizing_player:
-            paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
-            paths_for_first = min(paths_for_first)
-            paths_for_second = min(paths_for_second)
-        else:
-            paths_for_first, paths_for_second = get_paths_to_win(game_field, player_two, player_one)
-            paths_for_first = min(paths_for_first)
-            paths_for_second = min(paths_for_second)
-        return static_evaluation_of_game_field(paths_for_first, paths_for_second), moves
-    paths_for_first, paths_for_second = get_paths_to_win(game_field, player_one, player_two)
-    paths_for_first = min(paths_for_first)
-    paths_for_second = min(paths_for_second)
-    if maximizing_player:
-        max_evaluation = -inf
-        walls = get_all_walls(game_field, player_one, player_two, paths_for_first)
-        all_moves = get_all_moves(game_field, player_one, player_two)
-        possible_moves = walls + all_moves
-        for move in possible_moves:
-            moves.append(Minimax(move[0], move[1], move[2], move[3]))
-        print(len(moves))
-        for position in moves:
-            position.depth = depth - 1
-            evaluation, moves = minimax(position.game_field, position.depth, alpha, beta, False, position.player_two, position.player_one, moves)
-            max_evaluation = max(max_evaluation, evaluation)
-            alpha = max(alpha, evaluation)
-            position.minimax_eval = max_evaluation
+def minimax(obj_minimax, depth, alpha, beta, maximizingPlayer, player_one, player_two):
+    global counter
+    counter += 1
+    if depth == 0:  # TODO GameOver
+        path_first, path_second = get_paths_to_win(obj_minimax.game_field, player_one, player_two)  # Список путей
+        path_first = min(path_first, key=len)  # Кратчайший для первого
+        path_second = min(path_second, key=len)  # Кратчайший для второго
+        obj_minimax.player_one_path = path_first
+        obj_minimax.player_two_path = path_second
+        return evaluation(obj_minimax)
+
+    if type(obj_minimax) != Minimax:
+        obj_minimax = Minimax(copy.deepcopy(obj_minimax), player_one, player_two, action=None, depth=depth)
+    path_first, path_second = get_paths_to_win(obj_minimax.game_field, player_one, player_two)  # Список путей
+    path_first = min(path_first, key=len)  # Кратчайший для первого
+    path_second = min(path_second, key=len)  # Кратчайший для второго
+    obj_minimax.player_one_path = path_first
+    obj_minimax.player_two_path = path_second
+    walls = get_all_walls(obj_minimax.game_field, player_one, player_two, path_second)
+    for wall in walls:
+        obj_minimax.child.append(Minimax(wall[0], wall[1], wall[2], wall[3], depth, obj_minimax))
+    next_move_one_player = get_all_moves(obj_minimax.game_field, player_one, player_two, path_first)
+    obj_minimax.child.append(
+        Minimax(next_move_one_player[0][0], next_move_one_player[0][1], next_move_one_player[0][2], next_move_one_player[0][3]))
+
+    if maximizingPlayer:
+        max_eval = -inf
+        for child_local in obj_minimax.child:
+            eval, act = minimax(child_local, depth - 1, alpha, beta, False, player_two, player_one)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            obj_minimax.minimax_eval = alpha
             if beta <= alpha:
                 break
-        return (max_evaluation, moves)
+        return max_eval, obj_minimax
+
     else:
-        min_evaluation = +inf
-        walls = get_all_walls(game_field, player_two, player_one, paths_for_second)
-        all_moves = get_all_moves(game_field, player_two, player_one)
-        possible_moves = walls + all_moves
-        for move in possible_moves:
-            moves.append(Minimax(move[0], move[1], move[2], move[3]))
-        print(len(moves))
-        for position in moves:
-            position.depth = depth - 1
-            evaluation, moves = minimax(position.game_field, position.depth, alpha, beta, True, position.player_one, position.player_two, moves)
-            min_evaluation = min(min_evaluation, evaluation)
-            beta = min(beta, evaluation)
-            position.minimax_eval = min_evaluation
+        min_eval = +inf
+        for child_local in obj_minimax.child:
+            eval, act = minimax(child_local, depth - 1, alpha, beta, True, player_one, player_two)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            obj_minimax.minimax_eval = beta
             if beta <= alpha:
                 break
-        return (min_evaluation, moves)
+        return min_eval, obj_minimax
 
 
-def get_paths_to_win(game_field, player_one, player_two):
+
+def call_minimax(game_field, depth, alpha, beta, maximizingPlayer, player_one, player_two):
+    evl, act = minimax(game_field, depth, alpha, beta, maximizingPlayer, player_one, player_two)
+    global counter
+    print(counter)
+    counter = 0
+    for kid in act.child:
+        if kid.minimax_eval == evl:
+            return kid.action
+
+
+
+
+def evaluation(minim):
+    minim.minimax_eval = len(minim.player_one_path) - len(minim.player_two_path)
+    return minim.minimax_eval, minim
+
+
+
+def get_paths_to_win(game_field, player_one, player_two):  # Путь для игрока
     grid = game_field.graph
     paths_for_first = []
     paths_for_second = []
@@ -101,14 +130,6 @@ def get_paths_to_win(game_field, player_one, player_two):
 
     return paths_for_first, paths_for_second
 
-def static_evaluation_of_game_field(paths_for_first, paths_for_second):
-    evaluations_for_first = [len(path) for path in paths_for_first]
-    evaluations_for_second = [len(path) for path in paths_for_second]
-    min_first = min(evaluations_for_first)
-    min_second = min(evaluations_for_second)
-    evaluation = min_first - min_second
-
-    return evaluation
 
 
 def get_all_walls(game_field, player_one, player_two, path_to_win):
@@ -141,15 +162,20 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
     return game_fields
 
 
-def get_all_moves(game_field, player_one, player_two):
-    game_fields = []
-    player_one_moves = player_one.set_places_to_move(game_field, [player_one, player_two])
-    for move in player_one_moves:
-        tem_field = copy.deepcopy(game_field)
-        tem_player = copy.deepcopy(player_one)
-        tem_player.set_next_position(move)
-        if tem_player.can_move_here:
-            tem_field.move_player(tem_player)
-            game_fields.append((tem_field, tem_player, player_two, tem_player.next_position))
-    return game_fields
 
+def get_all_moves(game_field, player_one, player_two, path):
+    game_fields = []
+    tem_field = copy.deepcopy(game_field)
+    tem_player = copy.deepcopy(player_one)
+    tem_two_player = copy.deepcopy(player_two)
+    player_one_moves = tem_player.set_places_to_move(game_field, [tem_player, tem_two_player])
+    ind = -1
+    for index, step in enumerate(tem_player.places_to_move):
+        if step.x == path[2][1] and step.y == path[2][0]:
+            ind = index
+            break
+    tem_player.set_next_position(tem_player.places_to_move[ind])
+    if tem_player.can_move_here:
+        tem_field.move_player(tem_player)
+        game_fields.append((tem_field, tem_player, tem_two_player, tem_player.next_position))
+    return game_fields

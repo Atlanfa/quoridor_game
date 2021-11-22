@@ -131,17 +131,17 @@ class GameField:
             temp_field.append([])
             for j in range(len(field[1])):
                 if field[i][j] == 0:
-                    temp_field[i].append(2)  # Пустая клетка
+                    temp_field[i].append(100)  # Пустая клетка
                 elif field[i][j] == 3:
-                    temp_field[i].append(2)  # Пустая стенка
+                    temp_field[i].append(100)  # Пустая стенка
                 elif field[i][j] == 4:
                     temp_field[i].append(0)  # Стенка
                 elif field[i][j] == 5:
                     temp_field[i].append(0)  # Стенка
                 elif field[i][j] == 1:
-                    temp_field[i].append(1)  # Игрок
+                    temp_field[i].append(49)  # Игрок
                 elif field[i][j] == 2:
-                    temp_field[i].append(1)  # Игрок
+                    temp_field[i].append(49)  # Игрок
 
         return temp_field
 
