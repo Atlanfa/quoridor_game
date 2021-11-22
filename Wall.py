@@ -1,11 +1,12 @@
 from Coordinate import Coordinate
 import copy
-from GameField import calculate_point, get_connected_points
+from GameField import calculate_point, get_connected_points, GameField
+from datetime import datetime
 
 
 def if_there_path_to_win(game_field, player1, player2, wall):
     game_field.graph.cleanup()
-    temp_field = copy.deepcopy(game_field)
+    temp_field = copy.deepcopy(game_field)  # TODO Заменить как-то deepcopy
     temp_field.set_wall(wall)
     temp_field.graph = temp_field.set_graph()
     if temp_field.path_finder([player1, player2]):
@@ -14,27 +15,6 @@ def if_there_path_to_win(game_field, player1, player2, wall):
     else:
         del temp_field
         return False
-    # first = Coordinate(calculate_point(player1.current_position.x), calculate_point(player1.current_position.y))
-    # second = Coordinate(calculate_point(player2.current_position.x), calculate_point(player2.current_position.y))
-    #
-    # win_for_first = [node.data for node in game_field.nodes[0]]
-    #
-    # win_for_second = [node.data for node in game_field.nodes[-1]]
-    #
-    # graph = update_connections_from_field(get_connected_points(game_field.field), create_graph(game_field.nodes),
-    #                                       game_field.nodes)
-    # endpoints_for_first = graph.get_all_endpoint(game_field.nodes[first.x][first.y])
-    #
-    # endpoints_for_second = graph.get_all_endpoint(game_field.nodes[second.x][second.y])
-    #
-    # first_win_result = [i for i in endpoints_for_first if i in win_for_first]
-    # second_win_result = [i for i in endpoints_for_second if i in win_for_second]
-    # if len(first_win_result) != 0 and len(second_win_result) != 0:
-    #     # self.is_there_path_to_win = True
-    #     return True
-    # else:
-    #     # self.is_there_path_to_win = False
-    #     return False
 
 
 class Wall:
@@ -62,25 +42,39 @@ class Wall:
     def if_length_correct(self):
         if self.coordinates_start.x == self.coordinates_end.x:
             if self.coordinates_start.y > self.coordinates_end.y:
-                return True if len([num for num in range(self.coordinates_end.y + 1, self.coordinates_start.y)]) == 1 else False
+                return True if len(
+                    [num for num in range(self.coordinates_end.y + 1, self.coordinates_start.y)]) == 1 else False
             else:
-                return True if len([num for num in range(self.coordinates_start.y + 1, self.coordinates_end.y)]) == 1 else False
+                return True if len(
+                    [num for num in range(self.coordinates_start.y + 1, self.coordinates_end.y)]) == 1 else False
         elif self.coordinates_start.y == self.coordinates_end.y:
             if self.coordinates_start.x > self.coordinates_end.x:
-                return True if len([num for num in range(self.coordinates_end.x + 1, self.coordinates_start.x)]) == 1 else False
+                return True if len(
+                    [num for num in range(self.coordinates_end.x + 1, self.coordinates_start.x)]) == 1 else False
             else:
-                return True if len([num for num in range(self.coordinates_start.x + 1, self.coordinates_end.x)]) == 1 else False
+                return True if len(
+                    [num for num in range(self.coordinates_start.x + 1, self.coordinates_end.x)]) == 1 else False
         else:
             return False
 
     def _if_between_two_pares(self, game_field):
         if self.coordinates_start.y == self.coordinates_end.y:
-            return True if game_field.field[self.coordinates_start.x][self.coordinates_start.y - 1] in [0, 1, 2] and game_field.field[self.coordinates_start.x][self.coordinates_start.y + 1] in [0, 1, 2] and game_field.field[self.coordinates_start.x][self.coordinates_end.y - 1] in [0, 1, 2] and game_field.field[self.coordinates_start.x][self.coordinates_end.y + 1] in [0, 1, 2] else False
+            return True if game_field.field[self.coordinates_start.x][self.coordinates_start.y - 1] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_start.x][self.coordinates_start.y + 1] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_start.x][self.coordinates_end.y - 1] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_start.x][self.coordinates_end.y + 1] in [0, 1,
+                                                                                                      2] else False
         elif self.coordinates_start.x == self.coordinates_end.x:
-            return True if game_field.field[self.coordinates_start.x - 1][self.coordinates_start.y] in [0, 1, 2] and game_field.field[self.coordinates_start.x + 1][self.coordinates_start.y] in [0, 1, 2] and game_field.field[self.coordinates_end.x - 1][self.coordinates_start.y] in [0, 1, 2] and game_field.field[self.coordinates_end.x + 1][self.coordinates_start.y] in [0, 1, 2] else False
+            return True if game_field.field[self.coordinates_start.x - 1][self.coordinates_start.y] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_start.x + 1][self.coordinates_start.y] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_end.x - 1][self.coordinates_start.y] in [0, 1, 2] and \
+                           game_field.field[self.coordinates_end.x + 1][self.coordinates_start.y] in [0, 1,
+                                                                                                      2] else False
 
     def _if_there_another_wall(self, game_field):
-        return False if game_field[self.coordinates_start.x][self.coordinates_start.y] == 3 and game_field[self.coordinates_end.x][self.coordinates_end.y] == 3 and game_field[self.coordinates_middle.x][self.coordinates_middle.y] == 5 else True
+        return False if game_field[self.coordinates_start.x][self.coordinates_start.y] == 3 and \
+                        game_field[self.coordinates_end.x][self.coordinates_end.y] == 3 and \
+                        game_field[self.coordinates_middle.x][self.coordinates_middle.y] == 5 else True
 
 # wall = Wall(Coordinate(0, 7), Coordinate(2, 7))
 # # print(f"x middle - {wall.coordinates_middle.x} y middle - {wall.coordinates_middle.y}")

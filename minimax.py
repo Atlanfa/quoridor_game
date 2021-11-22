@@ -6,7 +6,9 @@ from pathfinding.finder.a_star import AStarFinder
 
 from Coordinate import Coordinate
 from Wall import Wall, if_there_path_to_win
+
 import time
+
 
 def timeit(func):
     """
@@ -15,7 +17,7 @@ def timeit(func):
     def measure_time(*args, **kw):
         start_time = time.time()
         result = func(*args, **kw)
-        print("Processing time of %s(): %.2f seconds."
+        print("Processing time of %s(): %.4f seconds."
               % (func.__qualname__, time.time() - start_time))
         return result
 
@@ -131,7 +133,6 @@ def get_paths_to_win(game_field, player_one, player_two):  # Путь для и�
     return paths_for_first, paths_for_second
 
 
-
 def get_all_walls(game_field, player_one, player_two, path_to_win):
     game_fields = []
     if player_one.walls_amount > 0:
@@ -148,8 +149,9 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] - 2, wall[0]), game_field))
                 if wall[1] + 2 <= 16:
                     walls.append(Wall(Coordinate(wall[1], wall[0]), Coordinate(wall[1] + 2, wall[0]), game_field))
+
         for wall in walls:
-            first = if_there_path_to_win(game_field, player_one, player_two, wall)
+            first = if_there_path_to_win(game_field, player_one, player_two, wall) # TODO Самая времязатратная функция ~80-90% времени
             second = wall.between_two_pares
             third = wall.is_there_another_wall
             four = wall.is_length_correct
@@ -159,6 +161,7 @@ def get_all_walls(game_field, player_one, player_two, path_to_win):
                 temp_player = copy.deepcopy(player_one)
                 temp_player.decrease_wall_amount()
                 game_fields.append((temp_field, temp_player, player_two, wall))
+
     return game_fields
 
 
